@@ -1,0 +1,3 @@
+docker/sensor-storage/minio/data/
+.env
+src/log/

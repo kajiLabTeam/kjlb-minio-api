@@ -1,0 +1,13 @@
+services:
+  golang:
+    container_name: ${MINIO_API_CONTAINER_HOST}
+    hostname: ${MINIO_API_HOST}
+    tty: true
+    env_file: .env
+    build:
+      context: .
+      dockerfile: ./docker/go/Dockerfile
+    volumes:
+      - ./src:/go/src/app
+    ports:
+      - 8000:8000
