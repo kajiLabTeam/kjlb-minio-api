@@ -13,6 +13,7 @@ import (
 )
 
 func Init() {
+	domain := os.Getenv("CORS_DOMAIN")
 	gin.DisableConsoleColor()
 	// ログファイルを作成
 	logFile, err := os.Create("log/server.log") // ファイルのパスを指定
@@ -27,7 +28,7 @@ func Init() {
 	r := gin.Default()
 	// CORSミドルウェアの設定
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},                   // 許可するオリジンを指定
+		AllowOrigins:     []string{"http://localhost:3000", domain},           // 許可するオリジンを指定
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}, // 許可するHTTPメソッド
 		AllowHeaders:     []string{"Content-Type", "Authorization"},           // 許可するヘッダー
 		AllowCredentials: true,                                                // クレデンシャル付きリクエストを許可
