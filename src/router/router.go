@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/NenfuAT/24AuthorizationServer/controller"
@@ -13,7 +14,9 @@ import (
 )
 
 func Init() {
-	domain := os.Getenv("CORS_DOMAIN")
+	// 環境変数からCORSドメインを取得し、カンマで分割
+	corsDomains := os.Getenv("CORS_DOMAIN")
+	domainList := strings.Split(corsDomains, ",")
 	gin.DisableConsoleColor()
 	// ログファイルを作成
 	logFile, err := os.Create("log/server.log") // ファイルのパスを指定
@@ -28,11 +31,11 @@ func Init() {
 	r := gin.Default()
 	// CORSミドルウェアの設定
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000", domain},           // 許可するオリジンを指定
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}, // 許可するHTTPメソッド
-		AllowHeaders:     []string{"Content-Type", "Authorization"},           // 許可するヘッダー
-		AllowCredentials: true,                                                // クレデンシャル付きリクエストを許可
-		MaxAge:           12 * time.Hour,                                      // プリフライトリクエストのキャッシュ期間
+		AllowOrigins:     append([]string{"http://localhost:3000"}, domainList...), // 許可するオリジンを指定
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},      // 許可するHTTPメソッド
+		AllowHeaders:     []string{"Content-Type", "Authorization"},                // 許可するヘッダー
+		AllowCredentials: true,                                                     // クレデンシャル付きリクエストを許可
+		MaxAge:           12 * time.Hour,                                           // プリフライトリクエストのキャッシュ期間
 	}))
 
 	r.GET("/hello", func(c *gin.Context) {
